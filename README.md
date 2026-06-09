@@ -1,36 +1,61 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ExploreEase
 
-## Getting Started
+Full-stack monorepo with an Express + MongoDB backend and a Next.js frontend for user registration and login.
 
-First, run the development server:
+## Structure
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```
+my-auth-app/
+├── README.md
+├── backend/    # Express + TypeScript + MongoDB API
+└── frontend/   # Next.js 16 frontend
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Quick start (both servers)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run install:all   # first time only
+cd backend && cp .env.example .env && cd ..
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Frontend: [http://localhost:3000](http://localhost:3000)
+- Backend API: [http://localhost:8089](http://localhost:8089)
 
-## Learn More
+## Backend only
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+cd backend
+cp .env.example .env
+npm install
+npm run dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Auth endpoints
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- `POST /api/v1/auth/register` — Register a new user
+- `POST /api/v1/auth/login` — Login and receive a JWT
 
-## Deploy on Vercel
+## Frontend only
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Environment variables
+
+**Backend** (`backend/.env`):
+
+```
+PORT=8089
+MONGODB_URL=mongodb://localhost:27017/class-36a-db
+SECRET_KEY=merosecretkey
+```
+
+**Frontend** (`frontend/.env.local`):
+
+```
+NEXT_PUBLIC_API_BASE_URL=http://localhost:8089
+```
