@@ -34,7 +34,7 @@ export class ApiResponseHelper {
     res: Response,
     message: string,
     status = 500,
-    data?: unknown
+    data: unknown = null
   ): Response {
     const response: ApiResponse = {
       status,

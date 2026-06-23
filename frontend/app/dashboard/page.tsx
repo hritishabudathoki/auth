@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import AuthenticatedNavbar from "@/app/_components/AuthenticatedNavbar";
 import { getUserData } from "@/lib/cookies";
 
 export default async function DashboardPage() {
@@ -11,19 +12,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-canvas">
-      <div className="m-stripe" />
-
-      <header className="border-b border-hairline">
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-5">
-          <Link
-            href="/"
-            className="text-lg font-light uppercase tracking-[1.5px] text-on-dark"
-          >
-            ExploreEase
-          </Link>
-          <span className="text-sm font-light text-muted">{user.email}</span>
-        </div>
-      </header>
+      <AuthenticatedNavbar />
 
       <main className="mx-auto max-w-5xl px-6 py-16">
         <p className="mb-3 text-xs uppercase tracking-[1.5px] text-muted">
@@ -43,6 +32,41 @@ export default async function DashboardPage() {
             {user.firstName} {user.lastName}
           </p>
           <p className="text-sm text-body">@{user.username}</p>
+          <p className="mt-1 text-sm text-body">{user.email}</p>
+        </div>
+
+        <div className="mt-6 grid gap-6 sm:grid-cols-2">
+          <div className="border border-hairline bg-surface-card p-6">
+            <p className="text-xs uppercase tracking-[1.5px] text-muted">
+              Profile
+            </p>
+            <p className="mt-3 text-sm font-light text-body">
+              Update your name, email, username, and profile image from the
+              protected profile page.
+            </p>
+            <Link
+              href="/profile"
+              className="mt-4 inline-flex text-sm uppercase tracking-[1.5px] text-on-dark"
+            >
+              Manage profile
+            </Link>
+          </div>
+
+          <div className="border border-hairline bg-surface-card p-6">
+            <p className="text-xs uppercase tracking-[1.5px] text-muted">
+              Security
+            </p>
+            <p className="mt-3 text-sm font-light text-body">
+              Change your password using the same protected update API and auth
+              flow.
+            </p>
+            <Link
+              href="/password"
+              className="mt-4 inline-flex text-sm uppercase tracking-[1.5px] text-on-dark"
+            >
+              Update password
+            </Link>
+          </div>
         </div>
       </main>
     </div>

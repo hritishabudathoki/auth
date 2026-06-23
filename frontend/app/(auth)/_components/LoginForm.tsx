@@ -6,10 +6,13 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { handleLoginUser } from "@/lib/actions/auth-action";
+import type { User } from "@/lib/api/auth";
+import { useAuth } from "@/lib/providers/auth-provider";
 import { loginSchema, type LoginFormValues } from "./schema";
 
 export default function LoginForm() {
   const router = useRouter();
+  const { setUser } = useAuth();
   const [isPending, startTransition] = useTransition();
   const [serverError, setServerError] = useState<string | null>(null);
 
@@ -27,6 +30,14 @@ export default function LoginForm() {
     startTransition(async () => {
       const result = await handleLoginUser(values);
       if (result.success) {
+        if (
+          result.data &&
+          typeof result.data === "object" &&
+          "user" in result.data &&
+          result.data.user
+        ) {
+          setUser(result.data.user as User);
+        }
         router.push("/dashboard");
         router.refresh();
         return;

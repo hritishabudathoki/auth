@@ -6,6 +6,7 @@ export interface IUserRepository {
   findByUsername(username: string): Promise<IUser | null>;
   findById(id: string): Promise<IUser | null>;
   create(data: Partial<IUser>): Promise<IUser>;
+  updateById(id: string, data: Partial<IUser>): Promise<IUser | null>;
 }
 
 export class UserMongoRepository implements IUserRepository {
@@ -24,5 +25,12 @@ export class UserMongoRepository implements IUserRepository {
   async create(data: Partial<IUser>): Promise<IUser> {
     const user = new UserModel(data);
     return user.save();
+  }
+
+  async updateById(id: string, data: Partial<IUser>): Promise<IUser | null> {
+    return UserModel.findByIdAndUpdate(id, data, {
+      new: true,
+      runValidators: true,
+    });
   }
 }

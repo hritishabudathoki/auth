@@ -32,7 +32,13 @@ export default function RegisterForm() {
   const onSubmit = (values: RegisterFormValues) => {
     setServerError(null);
     startTransition(async () => {
-      const { confirmPassword: _, ...payload } = values;
+      const payload = {
+        firstName: values.firstName,
+        lastName: values.lastName,
+        email: values.email,
+        username: values.username,
+        password: values.password,
+      };
       const result = await handleRegisterUser(payload);
       if (result.success) {
         router.push("/login");

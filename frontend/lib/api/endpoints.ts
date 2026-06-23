@@ -1,6 +1,8 @@
 export const API = {
   AUTH: {
-    REGISTER: "/api/v1/auth/register",
-    LOGIN: "/api/v1/auth/login",
+    REGISTER: "/api/proxy/auth/register",
+    LOGIN: "/api/proxy/auth/login",
+    WHO_AMI: "/api/proxy/auth/whoami",
+    UPDATE: "/api/proxy/auth/update",
   },
 };

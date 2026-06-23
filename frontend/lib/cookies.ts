@@ -19,6 +19,11 @@ export async function setTokenCookie(token: string) {
   cookieStore.set(AUTH_TOKEN, token, cookieOptions);
 }
 
+export async function getTokenCookie(): Promise<string | null> {
+  const cookieStore = await cookies();
+  return cookieStore.get(AUTH_TOKEN)?.value ?? null;
+}
+
 export async function storeUserData(user: User) {
   const cookieStore = await cookies();
   cookieStore.set(USER_DATA, JSON.stringify(user), cookieOptions);
