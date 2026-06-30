@@ -7,6 +7,12 @@ export interface IUserRepository {
   findById(id: string): Promise<IUser | null>;
   create(data: Partial<IUser>): Promise<IUser>;
   updateById(id: string, data: Partial<IUser>): Promise<IUser | null>;
+  findAll(
+    skip: number,
+    limit: number,
+    search?: string
+  ): Promise<{ users: IUser[]; total: number }>;
+  deleteById(id: string): Promise<boolean>;
 }
 
 export class UserMongoRepository implements IUserRepository {
@@ -32,5 +38,35 @@ export class UserMongoRepository implements IUserRepository {
       new: true,
       runValidators: true,
     });
+  }
+
+  async findAll(
+    skip: number,
+    limit: number,
+    search?: string
+  ): Promise<{ users: IUser[]; total: number }> {
+    const query: Record<string, any> = {};
+    if (search) {
+      const searchRegex = new RegExp(search, "i");
+      query.$or = [
+        { firstName: searchRegex },
+        { lastName: searchRegex },
+        { email: searchRegex },
+        { username: searchRegex },
+      ];
+    }
+
+    const total = await UserModel.countDocuments(query);
+    const users = await UserModel.find(query)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    return { users, total };
+  }
+
+  async deleteById(id: string): Promise<boolean> {
+    const result = await UserModel.findByIdAndDelete(id);
+    return result !== null;
   }
 }

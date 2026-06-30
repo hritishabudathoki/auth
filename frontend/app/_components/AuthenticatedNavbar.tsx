@@ -40,6 +40,14 @@ export default function AuthenticatedNavbar() {
             >
               Dashboard
             </Link>
+            {user?.role === "admin" && (
+              <Link
+                href="/dashboard/admin"
+                className="text-xs uppercase tracking-[1.5px] text-m-blue-dark transition-colors hover:text-on-dark sm:text-sm"
+              >
+                Admin
+              </Link>
+            )}
             <Link
               href="/profile"
               className="text-xs uppercase tracking-[1.5px] text-body transition-colors hover:text-on-dark sm:text-sm"

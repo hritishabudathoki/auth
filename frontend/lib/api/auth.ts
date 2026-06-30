@@ -96,3 +96,100 @@ export async function updateUser(data: FormData) {
     throw new Error(getApiErrorMessage(error, "Failed to update user"));
   }
 }
+
+export interface PaginationMeta {
+  page: number;
+  limit: number;
+  total: number;
+}
+
+export interface UsersListResponse {
+  status: number;
+  success: boolean;
+  message: string;
+  data?: User[];
+  meta?: PaginationMeta;
+}
+
+export async function adminGetUsers(params: {
+  page?: number;
+  limit?: number;
+  search?: string;
+}) {
+  try {
+    const query = new URLSearchParams();
+    if (params.page) query.set("page", String(params.page));
+    if (params.limit) query.set("limit", String(params.limit));
+    if (params.search) query.set("search", params.search);
+
+    const response = await axiosInstance.get<UsersListResponse>(
+      `${API.AUTH.USERS}?${query.toString()}`
+    );
+    return response.data;
+  } catch (error: unknown) {
+    throw new Error(getApiErrorMessage(error, "Failed to fetch users"));
+  }
+}
+
+export async function adminCreateUser(data: {
+  firstName: string;
+  lastName: string;
+  email: string;
+  username: string;
+  password: string;
+  role: "admin" | "user";
+}) {
+  try {
+    const response = await axiosInstance.post<ApiResponse<User>>(
+      API.AUTH.USERS,
+      data
+    );
+    return response.data;
+  } catch (error: unknown) {
+    throw new Error(getApiErrorMessage(error, "Failed to create user"));
+  }
+}
+
+export async function adminGetUser(id: string) {
+  try {
+    const response = await axiosInstance.get<ApiResponse<User>>(
+      `${API.AUTH.USERS}/${id}`
+    );
+    return response.data;
+  } catch (error: unknown) {
+    throw new Error(getApiErrorMessage(error, "Failed to fetch user"));
+  }
+}
+
+export async function adminUpdateUser(
+  id: string,
+  data: Partial<{
+    firstName: string;
+    lastName: string;
+    email: string;
+    username: string;
+    password: string;
+    role: "admin" | "user";
+  }>
+) {
+  try {
+    const response = await axiosInstance.patch<ApiResponse<User>>(
+      `${API.AUTH.USERS}/${id}`,
+      data
+    );
+    return response.data;
+  } catch (error: unknown) {
+    throw new Error(getApiErrorMessage(error, "Failed to update user"));
+  }
+}
+
+export async function adminDeleteUser(id: string) {
+  try {
+    const response = await axiosInstance.delete<ApiResponse<null>>(
+      `${API.AUTH.USERS}/${id}`
+    );
+    return response.data;
+  } catch (error: unknown) {
+    throw new Error(getApiErrorMessage(error, "Failed to delete user"));
+  }
+}

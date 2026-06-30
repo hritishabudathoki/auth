@@ -38,4 +38,6 @@ app.use(
   }
 );
 
+export const PORT = 8089;
+export const DUMMY = "Dummy Export";
 export default app;
