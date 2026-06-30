@@ -67,6 +67,24 @@ export default async function DashboardPage() {
               Update password
             </Link>
           </div>
+
+          {user.role === "admin" && (
+            <div className="border border-m-blue-dark bg-surface-card p-6 sm:col-span-2">
+              <p className="text-xs uppercase tracking-[1.5px] text-m-blue-dark">
+                Admin Panel
+              </p>
+              <p className="mt-3 text-sm font-light text-body">
+                You have admin access. Manage users — view, create, edit, and
+                delete accounts across the platform.
+              </p>
+              <Link
+                href="/dashboard/admin"
+                className="mt-4 inline-flex text-sm uppercase tracking-[1.5px] text-on-dark"
+              >
+                Open admin panel →
+              </Link>
+            </div>
+          )}
         </div>
       </main>
     </div>

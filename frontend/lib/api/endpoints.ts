@@ -4,5 +4,6 @@ export const API = {
     LOGIN: "/api/proxy/auth/login",
     WHO_AMI: "/api/proxy/auth/whoami",
     UPDATE: "/api/proxy/auth/update",
+    USERS: "/api/proxy/auth/users",
   },
 };

@@ -175,4 +175,94 @@ export class UserService {
 
     return omitPassword(updatedUser);
   }
+
+  async getUsers(page: number, limit: number, search?: string) {
+    const skip = (page - 1) * limit;
+    const { users, total } = await this.userRepository.findAll(
+      skip,
+      limit,
+      search
+    );
+    return {
+      users: users.map((user) => omitPassword(user)),
+      total,
+    };
+  }
+
+  async adminCreateUser(data: CreateUserInput & { role?: "admin" | "user" }) {
+    const existingEmail = await this.userRepository.findByEmail(data.email);
+    if (existingEmail) {
+      throw new HttpException(409, "Email already in use");
+    }
+
+    const existingUsername = await this.userRepository.findByUsername(
+      data.username
+    );
+    if (existingUsername) {
+      throw new HttpException(409, "Username already in use");
+    }
+
+    const hashedPassword = await bcrypt.hash(data.password, 10);
+
+    const user = await this.userRepository.create({
+      firstName: data.firstName,
+      lastName: data.lastName,
+      email: data.email,
+      username: data.username,
+      password: hashedPassword,
+      role: data.role ?? "user",
+    });
+
+    return omitPassword(user);
+  }
+
+  async adminUpdateUser(userId: string, data: any) {
+    const user = await this.userRepository.findById(userId);
+    if (!user) {
+      throw new HttpException(404, "User not found");
+    }
+
+    if (data.email && data.email !== user.email) {
+      const existingEmail = await this.userRepository.findByEmail(data.email);
+      if (existingEmail && String(existingEmail._id) !== userId) {
+        throw new HttpException(409, "Email already in use");
+      }
+    }
+
+    if (data.username && data.username !== user.username) {
+      const existingUsername = await this.userRepository.findByUsername(
+        data.username
+      );
+      if (existingUsername && String(existingUsername._id) !== userId) {
+        throw new HttpException(409, "Username already in use");
+      }
+    }
+
+    const updatePayload: Record<string, unknown> = {};
+    if (data.firstName) updatePayload.firstName = data.firstName;
+    if (data.lastName) updatePayload.lastName = data.lastName;
+    if (data.email) updatePayload.email = data.email;
+    if (data.username) updatePayload.username = data.username;
+    if (data.role) updatePayload.role = data.role;
+    if (data.password) {
+      updatePayload.password = await bcrypt.hash(data.password, 10);
+    }
+
+    const updatedUser = await this.userRepository.updateById(
+      userId,
+      updatePayload
+    );
+    if (!updatedUser) {
+      throw new HttpException(404, "User not found");
+    }
+    return omitPassword(updatedUser);
+  }
+
+  async adminDeleteUser(userId: string) {
+    const success = await this.userRepository.deleteById(userId);
+    if (!success) {
+      throw new HttpException(404, "User not found");
+    }
+    return true;
+  }
 }
